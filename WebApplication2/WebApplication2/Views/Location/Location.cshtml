@@ -1,0 +1,62 @@
+﻿
+@{
+    var temp = ViewData["location"] as IList<WebApplication2.Models.Result>;
+    var loc = temp.LastOrDefault();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@loc.country @loc.city @loc.location</h1>
+<div style="width:100%; display:flex; flex-direction:row">
+    <div class="outerdiv">
+        <div id="mapDiv" class="mapDiv"></div>
+    </div>
+        <div style="width:60rem; height:100%; display:inline-block; margin-left:2rem">
+            @if (loc.measurements != null)
+            {
+            <table class="locationTable">
+                <thead>
+                    <tr>
+                        <th>Measurements 1</th>
+                        <th>Measurements 2</th>
+                        <th>Last Updated</th>
+                        <th>Averaging Period</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var measurement in loc.measurements as IList<WebApplication2.Models.Measurement>)
+                    {
+                        <tr>
+                            <td>@measurement.parameter</td>
+                            <td>@measurement.value @measurement.unit</td>
+                            <td>@measurement.lastUpdated</td>
+                            <td>
+                                @(measurement.averagingPeriod == null ? "" : measurement.averagingPeriod.value.ToString() + " " + measurement.averagingPeriod.unit.ToString())
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+            }
+        </div>
+
+    </div>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8X66n8xf2x7wwzKbrLfhjEIVT-Pdwh_g"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var LatLng = new google.maps.LatLng(@loc.coordinates.latitude, @loc.coordinates.longitude)
+            var mapOptions ={
+                center: LatLng,
+                zoom: 4,
+                mapTypeId: google.maps.MapTypeId.TERRAIN
+            };
+            var map = new google.maps.Map(document.getElementById("mapDiv"), mapOptions);
+
+            new google.maps.Marker({
+                position: LatLng,
+                map,
+                title: "@loc.location, @loc.city, @loc.country",
+            });
+        }
+    </script>

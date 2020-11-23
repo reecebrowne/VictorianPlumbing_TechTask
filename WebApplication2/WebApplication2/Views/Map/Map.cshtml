@@ -1,0 +1,49 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model WebApplication2.ViewModels.RootViewModel
+<h1 style="margin-left:2rem">Map</h1>
+<div class="outerdiv">
+    <div id="mapDiv" class="mapDiv"></div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8X66n8xf2x7wwzKbrLfhjEIVT-Pdwh_g"></script>
+<script type="text/javascript">
+    var model = @Html.Raw(Json.Encode(Model));
+    var map;
+    var LatLng = new google.maps.LatLng(model.results[0].coordinates.latitude, model.results[0].coordinates.longitude)
+
+    window.onload = function () {
+        var mapOptions = {
+            center: LatLng,
+            zoom: 0,
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+        map = new google.maps.Map(document.getElementById("mapDiv"), mapOptions);
+        mapSet()
+    }
+
+    function mapSet() {
+        for (var i = 0; i < model.results.length; i++) {
+            LatLng = new google.maps.LatLng(model.results[i].coordinates.latitude, model.results[i].coordinates.longitude)
+            var cont = model.results[i].country + ", " + model.results[i].city + ", " + model.results[i].location + "</br>";
+            for (var x = 0; x < model.results[i].measurements.length; x++) {
+                cont = cont + model.results[i].measurements[x].parameter + " : " + model.results[i].measurements[x].value + " " + model.results[i].measurements[x].unit + "</br>";
+            }
+
+            const infowindow = new google.maps.InfoWindow({
+                content: cont
+            });
+
+            const marker = new google.maps.Marker({
+                position: LatLng,
+                map,
+                title: model.results[i].city,
+            });
+
+            marker.addListener("click", () => {
+                infowindow.open(map, marker);
+            });
+        }
+    }
+</script>

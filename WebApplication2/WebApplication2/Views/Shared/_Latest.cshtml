@@ -1,0 +1,40 @@
+﻿<h3 style="margin-left:2rem"> Latest </h3>
+<div style="overflow-y: scroll; height:40rem">
+    <table class="locationTable" id="locationTable">
+        <thead>
+            <tr>
+                <th>Country</th>
+                <th>City</th>
+                <th>Location</th>
+                <th></th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var com in ViewData["results"] as IList<WebApplication2.Models.Result>)
+            {
+                <tr>
+                    <td>@com.country</td>
+                    <td>@com.city</td>
+                    <td>@com.location</td>
+                    <td>
+                        <a href='@Url.Action("Location","Location", new { location = com.location} )' class="btn btn-primary">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <script>
+    </script>
+</div>
+<div style="margin-left:2rem">
+    <h3 >Filter</h3>
+    <input type="text" id="country"  placeholder="country">
+    <input type="text" id="city"  placeholder="city">
+    <input type="text" id="location" placeholder="location">
+    <button onclick="filter()">Filter</button>
+
+
+</div>

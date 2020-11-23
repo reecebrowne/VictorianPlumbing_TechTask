@@ -1,0 +1,87 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model WebApplication2.ViewModels.RootViewModel
+
+<div style="width:70%;">
+    <div id="latestDiv"></div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+
+<script>
+
+    $.ajax({
+        url: "/Home/_Latest/",
+        cache: false,
+        type: "POST",
+        data: {},
+        success: function (data) {
+            document.getElementById("latestDiv").innerHTML = data;
+        },
+        error: function (reponse) {
+            alert("error : " + reponse);
+        }
+    });
+
+    function viewLocation(location) {
+
+        $.ajax({
+            url: "/Location/Location/",
+            cache: false,
+            type: "POST",
+            data: { "location": location },
+            success: function (data) {
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function filter() {
+        var country = document.getElementById("country").value;
+        var city = document.getElementById("city").value;
+        var location = document.getElementById("location").value;
+        var table = document.getElementById("locationTable");
+        var row = table.getElementsByTagName("tr");
+
+        for (i = 0; i < row.length; i++) {
+            if (country != "") {
+                td = row[i].getElementsByTagName("td")[0];
+                if (td) {
+                    if (country.toLowerCase().indexOf(td.innerText.toLowerCase()) > -1 || country == "") {
+                        row[i].style.display = "";
+                    } else {
+                        row[i].style.display = "none";
+                    }
+                }
+            }
+            if (city != "") {
+                td = row[i].getElementsByTagName("td")[1];
+                if (td) {
+                    if (city.toLowerCase().indexOf(td.innerText.toLowerCase()) > -1 || city == "") {
+                        row[i].style.display = "";
+                    } else {
+                        row[i].style.display = "none";
+                    }
+                }
+            }
+            if (location != "") {
+                td = row[i].getElementsByTagName("td")[2];
+                if (td) {
+                    if (location.toLowerCase().indexOf(td.innerText.toLowerCase()) > -1) {
+                        row[i].style.display = "";
+                    } else {
+                        row[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    }
+
+
+
+</script>
